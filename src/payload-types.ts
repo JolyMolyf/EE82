@@ -71,6 +71,9 @@ export interface Config {
     media: Media;
     cars: Car;
     'car-categories': CarCategory;
+    'car-brands': CarBrand;
+    'car-models': CarModel;
+    'car-generations': CarGeneration;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +84,9 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     cars: CarsSelect<false> | CarsSelect<true>;
     'car-categories': CarCategoriesSelect<false> | CarCategoriesSelect<true>;
+    'car-brands': CarBrandsSelect<false> | CarBrandsSelect<true>;
+    'car-models': CarModelsSelect<false> | CarModelsSelect<true>;
+    'car-generations': CarGenerationsSelect<false> | CarGenerationsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -165,9 +171,9 @@ export interface Media {
  */
 export interface Car {
   id: number;
-  brand: string;
-  model: string;
-  generation?: string | null;
+  brand: number | CarBrand;
+  model?: (number | null) | CarModel;
+  generation?: (number | null) | CarGeneration;
   year: number;
   price: number;
   promotion_price?: number | null;
@@ -214,6 +220,41 @@ export interface Car {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "car-brands".
+ */
+export interface CarBrand {
+  id: number;
+  name: string;
+  'Available models'?: (number | CarModel)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "car-models".
+ */
+export interface CarModel {
+  id: number;
+  name: string;
+  brand: number | CarBrand;
+  'Available generations'?: (number | CarGeneration)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "car-generations".
+ */
+export interface CarGeneration {
+  id: number;
+  name: string;
+  yearStart?: number | null;
+  yearEnd?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "car-categories".
  */
 export interface CarCategory {
@@ -245,6 +286,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'car-categories';
         value: number | CarCategory;
+      } | null)
+    | ({
+        relationTo: 'car-brands';
+        value: number | CarBrand;
+      } | null)
+    | ({
+        relationTo: 'car-models';
+        value: number | CarModel;
+      } | null)
+    | ({
+        relationTo: 'car-generations';
+        value: number | CarGeneration;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -363,6 +416,38 @@ export interface CarsSelect<T extends boolean = true> {
 export interface CarCategoriesSelect<T extends boolean = true> {
   name?: T;
   description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "car-brands_select".
+ */
+export interface CarBrandsSelect<T extends boolean = true> {
+  name?: T;
+  'Available models'?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "car-models_select".
+ */
+export interface CarModelsSelect<T extends boolean = true> {
+  name?: T;
+  brand?: T;
+  'Available generations'?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "car-generations_select".
+ */
+export interface CarGenerationsSelect<T extends boolean = true> {
+  name?: T;
+  yearStart?: T;
+  yearEnd?: T;
   updatedAt?: T;
   createdAt?: T;
 }

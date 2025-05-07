@@ -11,6 +11,9 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import Cars from './collections/Cars'
 import CarCategories from './collections/CarCategories'
+import Brands from './collections/Brands'
+import Models from './collections/Models'
+import Generations from './collections/Generations'
 import SiteSettings from './globals/SiteSettings'
 import FinancingCalculator from './globals/FinancingCalculator'
 
@@ -24,7 +27,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Cars, CarCategories],
+  collections: [Users, Media, Cars, CarCategories, Brands, Models, Generations],
   globals: [SiteSettings, FinancingCalculator],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

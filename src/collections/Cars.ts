@@ -12,17 +12,32 @@ const Cars: CollectionConfig = {
   fields: [
     {
       name: 'brand',
-      type: 'text',
+      type: 'relationship',
+      relationTo: 'car-brands' as const,
       required: true,
     },
     {
       name: 'model',
-      type: 'text',
+      type: 'relationship',
+      relationTo: 'car-models' as const,
       required: true,
+      admin: {
+        condition: (data) => Boolean(data.brand),
+      },
+      filterOptions: ({ data }) => {
+        if (!data.brand) return true
+
+        return {
+          brand: {
+            equals: data.brand,
+          },
+        }
+      },
     },
     {
       name: 'generation',
-      type: 'text',
+      type: 'relationship',
+      relationTo: 'car-generations' as const,
     },
     {
       name: 'year',
