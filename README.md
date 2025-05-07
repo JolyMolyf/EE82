@@ -1,67 +1,144 @@
-# Payload Blank Template
+# Cars Home
 
-This template comes configured with the bare minimum to get started on anything you need.
+A web platform that enables users to browse available cars for sale and quickly calculate financing options (monthly installment + payment schedule). The main goal is to simplify the process of searching and preliminary financial assessment for potential car buyers.
 
-## Quick start
+## Table of Contents
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+- [Project Description](#project-description)
+- [Tech Stack](#tech-stack)
+- [Getting Started Locally](#getting-started-locally)
+- [Available Scripts](#available-scripts)
+- [Project Scope](#project-scope)
+- [Project Status](#project-status)
+- [License](#license)
 
-## Quick Start - local setup
+## Project Description
 
-To spin up this template locally, follow these steps:
+Cars Home solves several key problems for potential car buyers:
 
-### Clone
+1. **Lack of easy access to offers** - Users no longer need to visit multiple dealerships or websites
+2. **Difficulty in assessing financial possibilities** - Quick calculation of monthly payments
+3. **Lack of transparency in financing options** - Detailed payment schedules available upfront
+4. **Time-consuming search process** - Centralized catalog with sorting capabilities
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+The MVP (Minimum Viable Product) focuses on core functionalities to verify the business concept within one week of development. The application is built as a responsive web app, accessible on both mobile and desktop devices.
 
-### Development
+## Tech Stack
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+### Frontend
+- **Next.js** - React framework with built-in routing and server-side rendering
+- **React 19** - For interactive UI components
+- **TypeScript 5** - For static typing and better IDE support
+- **Tailwind 4** - For convenient styling
+- **ShadcnUI** - Accessible React component library
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+### Backend
+- **Payload CMS** - Headless CMS with PostgreSQL database
+- **Next.js API routes** - For backend functionality
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+### CI/CD & Hosting
+- **GitHub Actions** - For CI/CD pipelines
+- **Vercel** - For MVP hosting
+- **DigitalOcean** - For hosting via Docker image (post-MVP)
 
-#### Docker (Optional)
+## Getting Started Locally
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+### Prerequisites
 
-To do so, follow these steps:
+- Node.js (^18.20.2 || >=20.9.0)
+- pnpm (^9 || ^10)
 
-- Modify the `MONGODB_URI` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URI` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+### Installation
 
-## How it works
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/cars-home.git
+   cd cars-home
+   ```
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+2. Install dependencies
+   ```bash
+   pnpm install
+   ```
 
-### Collections
+3. Set up environment variables
+   Create a `.env.local` file in the root directory with the necessary environment variables.
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+4. Start the development server
+   ```bash
+   pnpm dev
+   ```
 
-- #### Users (Authentication)
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-  Users are auth-enabled collections that have access to the admin panel.
+## Available Scripts
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+- `pnpm build` - Builds the application for production
+- `pnpm dev` - Starts the development server
+- `pnpm devsafe` - Removes the .next directory and starts the development server
+- `pnpm generate:importmap` - Generates import map for Payload
+- `pnpm generate:types` - Generates TypeScript types for Payload
+- `pnpm lint` - Runs the linter
+- `pnpm payload` - Runs Payload CLI commands
+- `pnpm start` - Starts the production server
 
-- #### Media
+## Project Scope
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+### Functional Requirements
 
-### Docker
+1. **Car Catalog**
+   - Display list of available cars with basic info
+   - Sort by price (ascending/descending)
+   - Car details page with additional information
+   - Responsive design for all screen sizes
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+2. **Admin Panel**
+   - Authentication system for administrators
+   - Offer management (add, edit, delete cars)
+   - Financing parameters configuration
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+3. **Financing Calculator**
+   - Available on car detail pages
+   - Support for two financing types: credit and leasing
+   - User-input parameters (down payment, financing period, financing type)
+   - Calculations based on equal installment formula
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+4. **Payment Schedule**
+   - Detailed table showing the complete payment plan
+   - Payment dates, remaining capital, installment breakdown
 
-## Questions
+### Outside MVP Scope
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+- Direct online car purchase
+- Payment and settlement system
+- User panel and accounts
+- Advanced search and filtering
+- Payment schedule export to PDF
+- Online price negotiation
+- Integration with external financial systems
+- Vehicle reservation
+- History of viewed offers
+
+### Technical Limitations
+
+- No Docker deployment at MVP stage
+- No advanced analytics tools
+- Simple authentication for administrators
+- No automated performance tests
+
+## Project Status
+
+The project is currently in MVP (Minimum Viable Product) phase, focusing on core functionalities.
+
+### Success Metrics
+
+- **User Activity**: Minimum 200 unique users in first 3 months
+- **Engagement**: Average time spent on platform over 3 minutes
+- **Calculator Usage**: At least 40% of visitors use the financing calculator
+- **Conversion**: At least 5% of users view the payment schedule
+- **Platform Stability**: 99% uptime in first 3 months
+- **Performance**: Average page load time under 4 seconds
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
