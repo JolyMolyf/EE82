@@ -38,6 +38,37 @@ const Cars: CollectionConfig = {
       name: 'generation',
       type: 'relationship',
       relationTo: 'car-generations' as const,
+      admin: {
+        condition: (data) => Boolean(data.model),
+      },
+      filterOptions: async ({ data, req }) => {
+        if (!data.model) return true
+
+        // Fetch the selected model to get its available generations
+        try {
+          const model = await req.payload.findByID({
+            collection: 'car-models',
+            id: data.model,
+            depth: 0, // We don't need to populate the relationships
+          })
+
+          if (
+            model &&
+            model['Available generations'] &&
+            model['Available generations'].length > 0
+          ) {
+            return {
+              id: {
+                in: model['Available generations'],
+              },
+            }
+          }
+        } catch (error) {
+          console.error('Error filtering generations:', error)
+        }
+
+        return true
+      },
     },
     {
       name: 'year',
