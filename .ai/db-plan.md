@@ -31,7 +31,7 @@ Główna tabela przechowująca informacje o samochodach.
 | view_count | INTEGER | NOT NULL, DEFAULT 0, CHECK (view_count >= 0) | Licznik wyświetleń |
 | is_promoted | BOOLEAN | NOT NULL, DEFAULT FALSE | Czy oferta jest promowana na stronie głównej |
 | images | VARCHAR(255)[] | | Tablica URL-i do zdjęć samochodu |
-| primary_image_index | INTEGER | CHECK (primary_image_index >= 0), DEFAULT 0 | Indeks głównego zdjęcia w tablicy images |
+| car_main_image | JSONB | | Główne zdjęcie samochodu w formacie media |
 
 ### Tabela: `car_categories`
 Kategorie samochodów (np. kompakt, SUV, crossover).
@@ -191,7 +191,7 @@ CREATE TABLE cars (
     view_count INTEGER NOT NULL DEFAULT 0 CHECK (view_count >= 0),
     is_promoted BOOLEAN NOT NULL DEFAULT FALSE,
     images VARCHAR(255)[] DEFAULT '{}',
-    primary_image_index INTEGER CHECK (primary_image_index >= 0) DEFAULT 0
+    car_main_image JSONB
 );
 
 CREATE TABLE administrators (

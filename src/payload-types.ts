@@ -69,6 +69,8 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    cars: Car;
+    'car-categories': CarCategory;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +79,8 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    cars: CarsSelect<false> | CarsSelect<true>;
+    'car-categories': CarCategoriesSelect<false> | CarCategoriesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -84,8 +88,14 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+    'financing-calculator': FinancingCalculator;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'financing-calculator': FinancingCalculatorSelect<false> | FinancingCalculatorSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -151,6 +161,70 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cars".
+ */
+export interface Car {
+  id: number;
+  brand: string;
+  model: string;
+  generation?: string | null;
+  year: number;
+  price: number;
+  promotion_price?: number | null;
+  vin?: string | null;
+  mileage: number;
+  engine_power?: number | null;
+  fuel_type: 'petrol' | 'diesel' | 'electric' | 'hybrid' | 'lpg';
+  transmission_type: 'manual' | 'automatic' | 'semi-automatic';
+  engine_capacity?: number | null;
+  technical_inspection_date?: string | null;
+  color: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  is_new?: boolean | null;
+  status: 'active' | 'archived';
+  category: number | CarCategory;
+  view_count?: number | null;
+  is_promoted?: boolean | null;
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Main image for the car
+   */
+  car_main_image?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "car-categories".
+ */
+export interface CarCategory {
+  id: number;
+  name: string;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -163,6 +237,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'cars';
+        value: number | Car;
+      } | null)
+    | ({
+        relationTo: 'car-categories';
+        value: number | CarCategory;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -241,6 +323,51 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cars_select".
+ */
+export interface CarsSelect<T extends boolean = true> {
+  brand?: T;
+  model?: T;
+  generation?: T;
+  year?: T;
+  price?: T;
+  promotion_price?: T;
+  vin?: T;
+  mileage?: T;
+  engine_power?: T;
+  fuel_type?: T;
+  transmission_type?: T;
+  engine_capacity?: T;
+  technical_inspection_date?: T;
+  color?: T;
+  description?: T;
+  is_new?: T;
+  status?: T;
+  category?: T;
+  view_count?: T;
+  is_promoted?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  car_main_image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "car-categories_select".
+ */
+export interface CarCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -270,6 +397,88 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  financingSettings?: {
+    defaultFinancingType?: ('credit' | 'leasing') | null;
+    months?: ('6' | '12' | '24' | '36') | null;
+    percentage?: number | null;
+  };
+  socialMedia?: {
+    instagram?: string | null;
+    tiktok?: string | null;
+  };
+  contactMethods?: {
+    phoneNumber?: string | null;
+    email?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "financing-calculator".
+ */
+export interface FinancingCalculator {
+  id: number;
+  calculatorSettings: {
+    minDownPaymentPercentage: number;
+    maxFinancingPeriod: number;
+    interestRate: number;
+    type: 'credit' | 'leasing';
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  financingSettings?:
+    | T
+    | {
+        defaultFinancingType?: T;
+        months?: T;
+        percentage?: T;
+      };
+  socialMedia?:
+    | T
+    | {
+        instagram?: T;
+        tiktok?: T;
+      };
+  contactMethods?:
+    | T
+    | {
+        phoneNumber?: T;
+        email?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "financing-calculator_select".
+ */
+export interface FinancingCalculatorSelect<T extends boolean = true> {
+  calculatorSettings?:
+    | T
+    | {
+        minDownPaymentPercentage?: T;
+        maxFinancingPeriod?: T;
+        interestRate?: T;
+        type?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
