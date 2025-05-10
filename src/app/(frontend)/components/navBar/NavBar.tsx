@@ -22,16 +22,16 @@ export const NavBar = () => {
                     <NavigationMenuItem className='mx-3 my-2'>
                         <p className='text-2xl font-bold'>Cars Let</p>
                     </NavigationMenuItem>
-                        <Link href="/" >
-                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                Home
-                            </NavigationMenuLink>
-                        </Link>
-                        <Link href="/auth/login" >
-                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                Log In
+                    <NavigationMenuItem>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/">
+                            Home
                         </NavigationMenuLink>
-                        </Link>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/auth/login">
+                            Log In
+                        </NavigationMenuLink>
+                    </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
     )

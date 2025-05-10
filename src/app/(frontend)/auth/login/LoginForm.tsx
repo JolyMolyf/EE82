@@ -10,31 +10,37 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { loginUser, registerUser } from "../utils"
+import { loginUser } from "../utils"
 import { useState } from "react"
+import { useAppDispatch, useAppSelector } from "../../lib/hooks"
+import { setUser, setLoading, setError } from "../../lib/features/auth/authSlice"
+import { useRouter } from "next/navigation"
 
 export const LoginForm = ({className, ...props}: React.ComponentPropsWithoutRef<"div">) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useAppDispatch();
+    const router = useRouter();
+    const { loading, error } = useAppSelector((state) => state.auth);
+
     const handleLogin = async (e:any) => {
         e.preventDefault();
-        setIsLoading(true);
+        dispatch(setLoading(true));
         if (!email || !password) {
-            setError('Please enter email and password');
+            dispatch(setError('Please enter email and password'));
+            dispatch(setLoading(false));
             return;
         }
-        const res = await loginUser(email,password);
+        const res = await loginUser(email, password);
         if(!res.user){
-            setError(res.errors.map((error:any) => error.message).join(', '));
+            dispatch(setError(res.errors.map((error:any) => error.message).join(', ')));
+        } else {
+            dispatch(setUser(res.user));
+            router.push('/'); // Redirect to home page after successful login
         }
-        setIsLoading(false);
-        // registerUser(
-        //     'adrewtate@gmail.com',
-        //     'seradmin123'
-        // )
+        dispatch(setLoading(false));
     }
+
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -63,17 +69,23 @@ export const LoginForm = ({className, ...props}: React.ComponentPropsWithoutRef<
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Hasło</Label>
-                  {/* <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a> */}
                 </div>
-                <Input id="password" type="password" required name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  required 
+                  name="password" 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                />
               </div>
-              <Button type="submit" className="w-full" onClick={handleLogin} disabled={isLoading}>  
-                {isLoading ? 'Loading...' : 'Login'}
+              <Button 
+                type="submit" 
+                className="w-full" 
+                onClick={handleLogin} 
+                disabled={loading}
+              >  
+                {loading ? 'Loading...' : 'Login'}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">

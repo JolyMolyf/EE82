@@ -10,27 +10,43 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { registerUser } from "../utils"
+import { registerUser, loginUser } from "../utils"
 import { useState } from "react"
+import { useAppDispatch, useAppSelector } from "../../lib/hooks"
+import { setUser, setLoading, setError } from "../../lib/features/auth/authSlice"
+import { useRouter } from "next/navigation"
 
 export const RegisterForm = ({className, ...props}: React.ComponentPropsWithoutRef<"div">) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
-    const [error, setError] = useState('');
-    const handleLogin = async (e:any) => {
+    const dispatch = useAppDispatch();
+    const router = useRouter();
+    const { loading, error } = useAppSelector((state) => state.auth);
+
+    const handleRegister = async (e:any) => {
         e.preventDefault();
+        dispatch(setLoading(true));
         if (!email || !password || !firstname || !lastname) {
-            setError('Please enter email and password');
+            dispatch(setError('Please fill in all fields'));
+            dispatch(setLoading(false));
             return;
         }
-        const res = await registerUser(email,password,firstname,lastname);
+        const res = await registerUser(email, password, firstname, lastname);
         if(!res.success){
-            setError(res?.error || 'Nie udało się zarejestrować użytkownika');
+            dispatch(setError(res?.error || 'Nie udało się zarejestrować użytkownika'));
+        } else {
+            // After successful registration, log the user in
+            const loginRes = await loginUser(email, password);
+            if (loginRes.user) {
+                dispatch(setUser(loginRes.user));
+                router.push('/'); // Redirect to home page after successful registration
+            }
         }
-        
+        dispatch(setLoading(false));
     }
+
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -60,22 +76,48 @@ export const RegisterForm = ({className, ...props}: React.ComponentPropsWithoutR
                 <div className="flex items-center">
                   <Label htmlFor="password">Hasło</Label>
                 </div>
-                <Input id="password" type="password" required name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  required 
+                  name="password" 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Imie</Label>
+                  <Label htmlFor="firstname">Imie</Label>
                 </div>
-                <Input id="password" type="password" required name="firstname" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
+                <Input 
+                  id="firstname" 
+                  type="text" 
+                  required 
+                  name="firstname" 
+                  value={firstname} 
+                  onChange={(e) => setFirstname(e.target.value)} 
+                />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Nazwisko</Label>
+                  <Label htmlFor="lastname">Nazwisko</Label>
                 </div>
-                <Input id="password" type="password" required name="lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} />
+                <Input 
+                  id="lastname" 
+                  type="text" 
+                  required 
+                  name="lastname" 
+                  value={lastname} 
+                  onChange={(e) => setLastname(e.target.value)} 
+                />
               </div>
-              <Button type="submit" className="w-full" onClick={handleLogin}>  
-                Register
+              <Button 
+                type="submit" 
+                className="w-full" 
+                onClick={handleRegister}
+                disabled={loading}
+              >  
+                {loading ? 'Loading...' : 'Register'}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
