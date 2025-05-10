@@ -36,7 +36,6 @@ export async function registerUser(email:string, password:string, firstName:stri
 export async function loginUser(email:string, password:string) {
   try {
     // Attempt to login
-    console.log(email, password);
     const response = await fetch('http://localhost:3000/api/users/login', {
       method: 'POST',
       credentials: 'include',
@@ -50,7 +49,6 @@ export async function loginUser(email:string, password:string) {
     });
 
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error('Login error:', error);
@@ -66,13 +64,16 @@ export async function getUser() {
     credentials: 'include',
   });
   const data = await response.json();
-  console.log(data);
+  return data;
 }
 
 export async function logoutUser() {
-  const response = await fetch('http://localhost:3000/api/users/logout', {
-    credentials: 'include',
-  });
-  const data = await response.json();
-  console.log(data);
+  const res = await fetch('http://localhost:3000/api/users/logout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  const data = await res.json();
+  return data;
 }
