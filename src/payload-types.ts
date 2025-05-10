@@ -135,6 +135,9 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  role?: ('admin' | 'user' | 'loaner') | null;
+  firstName?: string | null;
+  lastName?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -171,6 +174,7 @@ export interface Media {
  */
 export interface Car {
   id: number;
+  title: string;
   brand: number | CarBrand;
   model?: (number | null) | CarModel;
   generation?: (number | null) | CarGeneration;
@@ -182,6 +186,7 @@ export interface Car {
   engine_power?: number | null;
   fuel_type: 'petrol' | 'diesel' | 'electric' | 'hybrid' | 'lpg';
   transmission_type: 'manual' | 'automatic' | 'semi-automatic';
+  drive: 'fwd' | 'awd' | 'rwd';
   engine_capacity?: number | null;
   technical_inspection_date?: string | null;
   color: string;
@@ -346,6 +351,9 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  firstName?: T;
+  lastName?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -379,6 +387,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "cars_select".
  */
 export interface CarsSelect<T extends boolean = true> {
+  title?: T;
   brand?: T;
   model?: T;
   generation?: T;
@@ -390,6 +399,7 @@ export interface CarsSelect<T extends boolean = true> {
   engine_power?: T;
   fuel_type?: T;
   transmission_type?: T;
+  drive?: T;
   engine_capacity?: T;
   technical_inspection_date?: T;
   color?: T;

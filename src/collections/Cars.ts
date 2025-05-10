@@ -3,13 +3,18 @@ import { CollectionConfig } from 'payload'
 const Cars: CollectionConfig = {
   slug: 'cars',
   admin: {
-    useAsTitle: 'model',
-    defaultColumns: ['brand', 'model', 'year', 'price', 'status'],
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'brand', 'model', 'year', 'price', 'color', 'status'],
   },
   access: {
     read: () => true,
   },
   fields: [
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
     {
       name: 'brand',
       type: 'relationship',
@@ -124,6 +129,16 @@ const Cars: CollectionConfig = {
         { label: 'Manual', value: 'manual' },
         { label: 'Automatic', value: 'automatic' },
         { label: 'Semi-automatic', value: 'semi-automatic' },
+      ],
+    },
+    {
+      name: 'drive',
+      type: 'select',
+      required: true,
+      options: [
+        { label: 'FWD', value: 'fwd' },
+        { label: 'AWD', value: 'awd' },
+        { label: 'RWD', value: 'rwd' },
       ],
     },
     {
